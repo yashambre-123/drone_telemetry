@@ -19,8 +19,8 @@ HERELINK1_IP=$(echo "$USER_INPUT" | cut -d '|' -f 2)
 HERELINK2_IP=$(echo "$USER_INPUT" | cut -d '|' -f 3)
 
 # Define the Python scripts
-PYTHON_SCRIPT1="get_attitude_data.py"
-PYTHON_SCRIPT2="get_complex.py"
+PYTHON_SCRIPT1="./drone_telemetry_code/get_attitude_data.py"
+PYTHON_SCRIPT2="./drone_telemetry_code/get_complex.py"
 
 # Define the MAVProxy commands with user-provided Herelink IPs
 MAVPROXY_COMMAND1="mavproxy.py --master=udpout:$HERELINK1_IP:14552 --out=udp:127.0.0.1:14510"
