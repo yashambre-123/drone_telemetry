@@ -14,7 +14,7 @@ port = 12345
 print("THIS IS MY SERVER ADDRESS: ", server_address)
 
 # Set up the socket connection (commented as it's unused for now)
-# sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Step 2: Connect to the Pixhawk
 master = mavutil.mavlink_connection('udp:127.0.0.1:14510')
@@ -62,6 +62,7 @@ set_message_interval(MSG_ID_VFR_HUD, FREQ_SPEED_HZ)
 
 # Step 5: Retrieve attitude, GPS, battery, and speed data at high rates
 try:
+    sock.connect((server_address, port))
     while True:
         attitude_data = ""
         gps_data = ""
@@ -114,6 +115,11 @@ try:
             f"Drone_No: {master.target_system}, {attitude_data}, {gps_data}, {battery_data}, {speed_data}\n"
         )
         print(combined_data)
+        
+        sock.sendall(combined_data.encode('utf-8'))
+
+        data = sock.recv(1024)
+        print(f"Received response from server: {data.decode('utf-8')}")
 
         # time.sleep(interval)  # Control the processing rate if needed
 
