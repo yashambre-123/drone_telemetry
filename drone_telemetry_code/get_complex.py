@@ -9,7 +9,7 @@ if len(sys.argv) < 2:
     sys.exit(1)
 
 server_address = sys.argv[1]  # Get the server address from the shell script
-port = 12345
+port = 12346
 
 print("THIS IS MY SERVER ADDRESS: ", server_address)
 
