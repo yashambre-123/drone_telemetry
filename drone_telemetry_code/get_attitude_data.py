@@ -109,12 +109,12 @@ try:
         combined_data = (
             f"Drone_No: {master.target_system}, {attitude_data}, {gps_data}, {battery_data}, {speed_data}\n"
         )
-        print(combined_data)
+        # print(combined_data)
         
         sock.sendall(combined_data.encode('utf-8'))
 
         data = sock.recv(1024)
-        print(f"Received response from server: {data.decode('utf-8')}")
+        # print(f"Received response from server: {data.decode('utf-8')}")
 
         # time.sleep(interval)  # Control the processing rate if needed
 
