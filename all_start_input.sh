@@ -29,14 +29,6 @@ cleanup() {
 # Trap Ctrl+C (SIGINT) and call cleanup
 trap cleanup SIGINT
 
-# Start the first MAVProxy instance in the background
-echo "Starting MAVProxy instance 1..."
-$MAVPROXY_COMMAND1 &
-
-# Start the second MAVProxy instance in the background
-echo "Starting MAVProxy instance 2..."
-$MAVPROXY_COMMAND2 &
-
 # Start the first Python script in the background with full paths for debugging
 echo "Starting Python script 1..."
 python3 "$(realpath $PYTHON_SCRIPT1)" &
@@ -44,6 +36,17 @@ python3 "$(realpath $PYTHON_SCRIPT1)" &
 # Start the second Python script in the background with full paths for debugging
 echo "Starting Python script 2..."
 python3 "$(realpath $PYTHON_SCRIPT2)" &
+
+# Give the Python scripts a little time to start (optional)
+sleep 2
+
+# Start the first MAVProxy instance in the background
+echo "Starting MAVProxy instance 1..."
+$MAVPROXY_COMMAND1 &
+
+# Start the second MAVProxy instance in the background
+echo "Starting MAVProxy instance 2..."
+$MAVPROXY_COMMAND2 &
 
 # Wait for the processes to run indefinitely until interrupted
 echo "All instances are running. Press Ctrl+C to stop."
