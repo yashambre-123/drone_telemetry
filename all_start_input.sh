@@ -2,7 +2,7 @@
 
 # Hardcoded IP addresses
 HERELINK1_IP="192.168.0.103"
-HERELINK2_IP="192.168.0.102"
+HERELINK2_IP="192.168.0.100"
 
 # Define the Python scripts
 PYTHON_SCRIPT1="./drone_telemetry_code/get_attitude_data.py"
