@@ -1,12 +1,16 @@
 #!/bin/bash
 
-# Define the Python scripts
-PYTHON_SCRIPT1="get_attitude_data.py"
-PYTHON_SCRIPT2="get_complex.py"
+# Hardcoded IP addresses
+HERELINK1_IP="192.168.0.103"
+HERELINK2_IP="192.168.0.100"
 
-# Define the MAVProxy commands
-MAVPROXY_COMMAND1="mavproxy.py --master=udpout:192.168.1.41:14552 --out=udp:127.0.0.1:14510"
-MAVPROXY_COMMAND2="mavproxy.py --master=udpout:192.168.1.51:14552 --out=udp:127.0.0.1:14520"
+# Define the Python scripts
+PYTHON_SCRIPT1="./drone_telemetry_code/get_attitude_data.py"
+PYTHON_SCRIPT2="./drone_telemetry_code/get_complex.py"
+
+# Define the MAVProxy commands with hardcoded Herelink IPs
+MAVPROXY_COMMAND1="mavproxy.py --master=udpout:$HERELINK1_IP:14552 --out=udp:127.0.0.1:14510"
+MAVPROXY_COMMAND2="mavproxy.py --master=udpout:$HERELINK2_IP:14552 --out=udp:127.0.0.1:14520"
 
 # Function to handle cleanup when script is interrupted
 cleanup() {
@@ -18,9 +22,6 @@ cleanup() {
     pkill -f "$MAVPROXY_COMMAND1"
     pkill -f "$MAVPROXY_COMMAND2"
 
-    # Close all gnome-terminal windows that were opened
-    pkill -f gnome-terminal
-
     # Exit the script
     exit 0
 }
@@ -28,24 +29,27 @@ cleanup() {
 # Trap Ctrl+C (SIGINT) and call cleanup
 trap cleanup SIGINT
 
-# Start the first MAVProxy instance in a new terminal
-echo "Starting MAVProxy instance 1 in a new terminal..."
-gnome-terminal -- bash -c "$MAVPROXY_COMMAND1; exec bash" &
+# Start the first Python script in the background with full paths for debugging
+echo "Starting Python script 1..."
+python3 "$(realpath $PYTHON_SCRIPT1)" &
 
-# Start the second MAVProxy instance in a new terminal
-echo "Starting MAVProxy instance 2 in a new terminal..."
-gnome-terminal -- bash -c "$MAVPROXY_COMMAND2; exec bash" &
+# Start the second Python script in the background with full paths for debugging
+echo "Starting Python script 2..."
+python3 "$(realpath $PYTHON_SCRIPT2)" &
 
-# Start the first Python script in a new terminal
-echo "Starting Python script 1 in a new terminal..."
-gnome-terminal -- bash -c "python3 $PYTHON_SCRIPT1; exec bash" &
+# Give the Python scripts a little time to start (optional)
+sleep 2
 
-# Start the second Python script in a new terminal
-echo "Starting Python script 2 in a new terminal..."
-gnome-terminal -- bash -c "python3 $PYTHON_SCRIPT2; exec bash" &
+# Start the first MAVProxy instance in the background
+echo "Starting MAVProxy instance 1..."
+$MAVPROXY_COMMAND1 &
+
+# Start the second MAVProxy instance in the background
+echo "Starting MAVProxy instance 2..."
+$MAVPROXY_COMMAND2 &
 
 # Wait for the processes to run indefinitely until interrupted
-echo "All instances are running. Press Ctrl+C to stop and close all terminals."
+echo "All instances are running. Press Ctrl+C to stop."
 
 # Keep the script running until interrupted by Ctrl+C
 while true; do
