@@ -10,7 +10,7 @@ MAVPROXY_COMMAND1="mavproxy.py --master=udpout:$HERELINK1_IP:14552 --out=udp:127
 cleanup() {
     echo "Caught interrupt signal (Ctrl+C). Stopping MAVProxy instance 1..."
 
-    # Kill the MAVProxy process
+    # Kill the MAVProxy process (if it's running)
     pkill -f "$MAVPROXY_COMMAND1"
 
     # Exit the script
@@ -20,9 +20,9 @@ cleanup() {
 # Trap Ctrl+C (SIGINT) and call cleanup
 trap cleanup SIGINT
 
-# Start the MAVProxy instance 1 in the background
+# Start the MAVProxy instance 1 in the foreground
 echo "Starting MAVProxy instance 1..."
-$MAVPROXY_COMMAND1 &
+$MAVPROXY_COMMAND1
 
 # Wait for Ctrl+C to stop the process
 echo "MAVProxy instance 1 is running. Press Ctrl+C to stop."
