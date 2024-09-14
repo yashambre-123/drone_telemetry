@@ -3,13 +3,8 @@ import socket
 import sys
 import time
 
-# Step 1: Get the server address from the command line arguments
-if len(sys.argv) < 2:
-    print("Usage: python get_attitude_data.py <server_address>")
-    sys.exit(1)
-
-server_address = sys.argv[1]  # Get the server address from the shell script
-port = 12345
+server_address = '192.168.0.104' # Get the server address from the shell script
+port = 12341
 
 print("THIS IS MY SERVER ADDRESS: ", server_address)
 

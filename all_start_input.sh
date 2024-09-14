@@ -1,28 +1,14 @@
 #!/bin/bash
 
-# Use Zenity to pop up a dialog for inputting two Herelink transmitter IP addresses
-USER_INPUT=$(zenity --forms --title="Input Required" \
-  --text="Enter the server and Herelink transmitter IP addresses:" \
-  --add-entry="Server address" \
-  --add-entry="Herelink 1 IP" \
-  --add-entry="Herelink 2 IP")
-
-# Check if input was canceled or empty
-if [ -z "$USER_INPUT" ]; then
-    echo "No input provided. Exiting..."
-    exit 1
-fi
-
-# Split the user input into separate variables (Server, Herelink1, Herelink2)
-SERVER_IP=$(echo "$USER_INPUT" | cut -d '|' -f 1)
-HERELINK1_IP=$(echo "$USER_INPUT" | cut -d '|' -f 2)
-HERELINK2_IP=$(echo "$USER_INPUT" | cut -d '|' -f 3)
+# Hardcoded IP addresses
+HERELINK1_IP="192.168.0.103"
+HERELINK2_IP="192.168.0.102"
 
 # Define the Python scripts
 PYTHON_SCRIPT1="./drone_telemetry_code/get_attitude_data.py"
 PYTHON_SCRIPT2="./drone_telemetry_code/get_complex.py"
 
-# Define the MAVProxy commands with user-provided Herelink IPs
+# Define the MAVProxy commands with hardcoded Herelink IPs
 MAVPROXY_COMMAND1="mavproxy.py --master=udpout:$HERELINK1_IP:14552 --out=udp:127.0.0.1:14510"
 MAVPROXY_COMMAND2="mavproxy.py --master=udpout:$HERELINK2_IP:14552 --out=udp:127.0.0.1:14520"
 
@@ -54,13 +40,13 @@ gnome-terminal -- bash -c "$MAVPROXY_COMMAND1; exec bash" &
 echo "Starting MAVProxy instance 2 in a new terminal..."
 gnome-terminal -- bash -c "$MAVPROXY_COMMAND2; exec bash" &
 
-# Start the first Python script in a new terminal and pass the input as an argument
-echo "Starting Python script 1 in a new terminal with server address $SERVER_IP..."
-gnome-terminal -- bash -c "python3 $PYTHON_SCRIPT1 $SERVER_IP; exec bash" &
+# Start the first Python script in a new terminal
+echo "Starting Python script 1 in a new terminal..."
+gnome-terminal -- bash -c "python3 $PYTHON_SCRIPT1; exec bash" &
 
-# Start the second Python script in a new terminal and pass the input as an argument
-echo "Starting Python script 2 in a new terminal with server address $SERVER_IP..."
-gnome-terminal -- bash -c "python3 $PYTHON_SCRIPT2 $SERVER_IP; exec bash" &
+# Start the second Python script in a new terminal
+echo "Starting Python script 2 in a new terminal..."
+gnome-terminal -- bash -c "python3 $PYTHON_SCRIPT2; exec bash" &
 
 # Wait for the processes to run indefinitely until interrupted
 echo "All instances are running. Press Ctrl+C to stop and close all terminals."
