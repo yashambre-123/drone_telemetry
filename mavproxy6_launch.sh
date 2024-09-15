@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Hardcoded IP address for Herelink 2
-HERELINK2_IP="192.168.0.102"
+HERELINK2_IP="192.168.0.106"
 
 # Define the MAVProxy command for Herelink 2
-MAVPROXY_COMMAND2="mavproxy.py --master=udpout:$HERELINK2_IP:14552 --out=udp:127.0.0.1:14520"
+MAVPROXY_COMMAND2="mavproxy.py --master=udpout:$HERELINK2_IP:14552 --out=udp:127.0.0.1:14560"
 
 # Function to handle cleanup when script is interrupted
 cleanup() {
@@ -21,11 +21,11 @@ cleanup() {
 trap cleanup SIGINT
 
 # Start the MAVProxy instance 2 in the foreground
-echo "Starting MAVProxy instance 2..."
+echo "Starting MAVProxy instance 6..."
 $MAVPROXY_COMMAND2
 
 # Wait for Ctrl+C to stop the process
-echo "MAVProxy instance 2 is running. Press Ctrl+C to stop."
+echo "MAVProxy instance 6 is running. Press Ctrl+C to stop."
 
 # Keep the script running until interrupted
 while true; do

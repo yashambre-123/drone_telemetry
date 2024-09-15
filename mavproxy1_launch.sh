@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Hardcoded IP address for Herelink 1
-HERELINK1_IP="192.168.0.103"
+HERELINK1_IP="192.168.0.101"
 
 # Define the MAVProxy command for Herelink 1
 MAVPROXY_COMMAND1="mavproxy.py --master=udpout:$HERELINK1_IP:14552 --out=udp:127.0.0.1:14510"
