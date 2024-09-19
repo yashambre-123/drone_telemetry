@@ -8,7 +8,7 @@ port = 12342
 
 print("THIS IS MY SERVER ADDRESS: ", server_address)
 
-# Set up the socket connection (commented as it's unused for now)
+# Set up the socket connection
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Step 2: Connect to the Pixhawk
@@ -55,16 +55,26 @@ set_message_interval(MSG_ID_GPS, FREQ_GPS_HZ)
 set_message_interval(MSG_ID_SYS_STATUS, FREQ_BATTERY_HZ)
 set_message_interval(MSG_ID_VFR_HUD, FREQ_SPEED_HZ)
 
-# Step 5: Retrieve attitude, GPS, battery, and speed data at high rates
+# Step 5: Try to connect to the server and wait until successful
+connected = False
+while not connected:
+    try:
+        sock.connect((server_address, port))
+        connected = True
+        print("Successfully connected to the server.")
+    except (ConnectionRefusedError, socket.error) as e:
+        print(f"Connection failed: {e}. Retrying in 5 seconds...")
+        time.sleep(5)  # Wait for 5 seconds before retrying
+
+# Step 6: Retrieve attitude, GPS, battery, and speed data at high rates
 try:
-    sock.connect((server_address, port))
     while True:
         attitude_data = ""
         gps_data = ""
         battery_data = ""
         speed_data = ""
 
-        # Step 6: Retrieve ATTITUDE message
+        # Step 7: Retrieve ATTITUDE message
         att_msg = master.recv_match(type='ATTITUDE', blocking=True)
         if att_msg:
             attitude_data = (
@@ -76,8 +86,8 @@ try:
                 f"Yaw Speed: {att_msg.yawspeed:.4f} rad/s"
             )
 
-        # Step 7: Retrieve GPS_RAW_INT message
-        gps_msg = master.recv_match(type='GPS_RAW_INT', blocking=True)  # non-blocking to keep things fast
+        # Step 8: Retrieve GPS_RAW_INT message
+        gps_msg = master.recv_match(type='GPS_RAW_INT', blocking=True)
         if gps_msg:
             gps_data = (
                 f"Latitude: {gps_msg.lat / 1e7:.6f}°, "
@@ -86,7 +96,7 @@ try:
                 f"Satellites Visible: {gps_msg.satellites_visible}"
             )
 
-        # Step 8: Retrieve SYS_STATUS message (Battery info)
+        # Step 9: Retrieve SYS_STATUS message (Battery info)
         bat_msg = master.recv_match(type='SYS_STATUS', blocking=True)
         if bat_msg:
             battery_data = (
@@ -95,7 +105,7 @@ try:
                 f"Remaining: {bat_msg.battery_remaining} %"
             )
 
-        # Step 9: Retrieve VFR_HUD message (Speed info)
+        # Step 10: Retrieve VFR_HUD message (Speed info)
         speed_msg = master.recv_match(type='VFR_HUD', blocking=True)
         if speed_msg:
             speed_data = (
@@ -109,14 +119,11 @@ try:
         combined_data = (
             f"Drone_No: {master.target_system}, {attitude_data}, {gps_data}, {battery_data}, {speed_data}\n"
         )
-        # print(combined_data)
         
         sock.sendall(combined_data.encode('utf-8'))
 
         data = sock.recv(1024)
-        # print(f"Received response from server: {data.decode('utf-8')}")
-
-        # time.sleep(interval)  # Control the processing rate if needed
+        # Handle server response here if needed
 
 except KeyboardInterrupt:
     print("Process interrupted by user.")
