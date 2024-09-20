@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the Python script path
-PYTHON_SCRIPT2="./drone_telemetry_code/get_complex.py"
+PYTHON_SCRIPT2="/home/maker/drone_telemetry/drone_telemetry_code/drone2.py"
 
 # Start the second Python script in the background
 echo "Starting Python script 2..."

@@ -1,0 +1,28 @@
+network:
+    version: 2
+    renderer: networkd
+    ethernets:
+        eth0:
+          dhcp4: no
+          addresses:
+            - 192.168.0.107/24
+          gateway4: 192.168.0.1
+          nameservers:
+              addresses: [8.8.8.8, 1.1.1.1]
+    wifis:
+        wlan1:
+            access-points:
+                "DroneStark_2g":
+                    password: "prodigy1"
+            dhcp4: true
+            optional: true
+            access-points:
+                "DroneStark_5G":
+                    password: "prodigy01"
+            dhcp4: true
+            optional: true
+            access-points:
+                "OP7":
+                    password: "qwertyuiop"
+            dhcp4: true
+            optional: true
