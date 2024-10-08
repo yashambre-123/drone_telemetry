@@ -3,7 +3,7 @@ import socket
 import sys
 import time
 
-server_address = '192.168.0.103'  # Get the server address from the shell script
+server_address = '192.168.0.109'  # Get the server address from the shell script
 port = 12343
 
 print("THIS IS MY SERVER ADDRESS: ", server_address)
